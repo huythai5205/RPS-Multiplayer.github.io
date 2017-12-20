@@ -1,0 +1,32 @@
+header{
+    text-align: center;
+    padding-top: 30px;
+}
+
+.info-display{
+    height: 200px;
+}
+
+.first-player-display{
+    height: 100px;
+    border-style: solid;
+    border-width: 2px;
+}
+
+.result-display{
+    height: 100px;
+    border-style: solid;
+    border-width: 2px;
+    margin: 10px;
+}
+
+.second-player-display{
+    height:100px;
+    border-style: solid;
+    border-width: 2px;
+}
+
+.chat-display{
+    border-style: solid;
+    border-width: 2px;
+}

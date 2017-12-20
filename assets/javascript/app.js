@@ -11,57 +11,62 @@ $(document).ready(function () {
     };
     firebase.initializeApp(config);
 
-    let wait;
+    let waitTime;
     let waitTimer;
 
-    function player() {
-        let name = name.input();
-        let player = {
+    let player = function (name) {
+        return player = {
             name: name,
-            Wins: 0,
-            Loses: 0
+            wins: 0,
+            losses: 0,
+            choice: '',
+            waiting: true,
+            ready: true,
         }
-
-        firebaseRef.on('value', function (data) {
-            if (data.exists() === 1) {
-                $('playerOneChoices').addClass(name + 'Choice');
-            } else if (data.exists() === 2) {
-                $('playerTwoChoices').addClass(name + 'Choice');
-            }
-            saveToDatabase(name, player);
-            pickChoices(name);
-        });
-
     }
 
-    $(document).on('click', '.choice', function () {
+    function startGame() {
+        $('.info-display').html(`
+         <div class="input-group">
+                    <input type="text" class="form-control" id="nameInput">
+                    <span class="input-group-btn">
+                        <button class="btn btn-secondary" id="nameSubmitBtn" type="button">Enter</button>
+                    </span>
+                </div>
+        `);
+    }
+    startGame();
 
-    });
+    function saveToDatabase(name, player) {
+        firebase.database().ref(name).set(player);
+    }
 
-    function pickChoices(name) {
+    function pickChoices(player) {
         $(name + '-choices').html('Display choices ');
         SetTimer(waiting(name), wait);
     }
 
-    function waiting(name) {
-        $(name + '-choices').html('Display wating ');
-        if (ready) {
-            Cancel timer;
-            Name.setready in database;
-            Settimeout(Displayresult(), wait);
-            PickChoices();
-        } else {
-            Name.setready in database;
-        }
+    function displayWaiting(player) {
+        console.log(player);
+        firebase.database().ref().on('value', function (data) {
+        });
     }
 
-    function displayResult() {
-        $('.result').html(`
-                    Display result;
-                    `);
-    }
+    $(document).on('click', '#nameSubmitBtn', function () {
 
-    function saveToDatabase(#, player) {
-        firebaseRef.set(player + '' + #);
-    }
+        firebase.database().ref().on('value', function (data) {
+            if (!data.exists()) {
+                saveToDatabase('player1', player($('#nameInput').val()));
+                displayWaiting(player1);
+            } else if (data.val().length === 1) {
+                saveToDatabase('player2', player($('#nameInput').val()));
+                displayWaiting(player2);
+            } else {
+                $('.info-display').html(`
+                <h1>There are two players already</h1>
+                `);
+            }
+        });
+    });
+
 });
