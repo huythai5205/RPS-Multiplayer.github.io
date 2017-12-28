@@ -7,7 +7,13 @@ header{
     height: 200px;
 }
 
-.first-player-display{
+.col-4{
+    height: 200px;
+    border-style: solid;
+    border-width: 2px;
+}
+
+/* .player0-display{
     height: 100px;
     border-style: solid;
     border-width: 2px;
@@ -17,16 +23,20 @@ header{
     height: 100px;
     border-style: solid;
     border-width: 2px;
-    margin: 10px;
 }
 
-.second-player-display{
+.player1-display{
     height:100px;
     border-style: solid;
     border-width: 2px;
-}
+} */
 
 .chat-display{
     border-style: solid;
     border-width: 2px;
+}
+
+.chat-box{
+    height: 200px;
+    overflow: scroll;
 }

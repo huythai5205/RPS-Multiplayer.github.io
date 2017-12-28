@@ -14,31 +14,36 @@
 
 <body>
     <header>
-        <h1>Rock Paper Scissors</h1>
+        <h1>Rock Paper Scissor</h1>
     </header>
     <div class="container">
         <div class="info-display">
 
         </div>
         <div class="row">
-            <div class="col-4 first-player-display">
+            <div class="col-4 player0-display">
 
             </div>
             <div class="col-4 result-display">
 
             </div>
-            <div class="col-4 second-player-display">
+            <div class="col-4 player1-display">
 
             </div>
             <div class="col-12 chat-display">
+                <div class="chat-box"></div>
                 <div class="input-group">
-                    <input type="text" class="form-control">
+                    <input type="text" class="form-control" id="chat-input">
                     <span class="input-group-btn">
-                        <button class="btn btn-secondary" type="button">Send</button>
+                        <button class="btn btn-secondary" id="chat-btn" type="button">Send</button>
                     </span>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div>
+        <button id="disconnect-btn">Disconnect</button>
     </div>
 
 

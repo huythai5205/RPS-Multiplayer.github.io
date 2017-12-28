@@ -11,10 +11,12 @@ $(document).ready(function () {
     };
     firebase.initializeApp(config);
 
-    let waitTime;
-    let waitTimer;
+    let player;
+    let opponent;
+    let waitTime = 1000;
+    let waitingTimer;
     let aPlayer = [];
-    let firebaseRef = firebase.database().ref();
+    let aChat = [];
 
     function addPlayer(name) {
         return player = {
@@ -22,21 +24,143 @@ $(document).ready(function () {
             wins: 0,
             losses: 0,
             choice: '',
-            waiting: false,
             ready: false,
         }
     }
 
+
+    function updatePlayers() {
+        firebase.database().ref('/Players').set(aPlayer);
+    }
+
+    function displayChat() {
+        $('.chat-box').empty();
+        aChat.forEach(function (value) {
+            $('.chat-box').append(`<p>${value}</p>`);
+        });
+        $('.chat-box').scrollTop($('.chat-box')[0].scrollHeight);
+    }
+
+    $('#chat-btn').click(function () {
+        aChat.push(`${aPlayer[player].name}-${$('#chat-input').val()}`);
+        firebase.database().ref('/Chat').set(aChat);
+        $('#chat-input').empty();
+        displayChat();
+    });
+
+    function seeWhoWin() {
+        if (aPlayer[player].choice === aPlayer[opponent].choice) {
+            return 'Tie';
+        } else {
+            if ((aPlayer[player].choice === 'Rock' && aPlayer[opponent].choice === 'Paper') || (aPlayer[player].choice === 'Paper' && aPlayer[opponent].choice === 'Scissor') || (aPlayer[player].choice === 'Scissor' && aPlayer[opponent].choice === 'Rock')) {
+                aPlayer[player].losses++;
+                return 'you lose';
+            } else {
+                aPlayer[player].wins++;
+                return 'you win';
+            }
+        }
+    }
+    function displayResult() {
+        if (aPlayer[opponent].ready === true) {
+            clearInterval(waitingTimer);
+            aPlayer[opponent].ready = false;
+            $('.result-display').html(`
+                <h1>${seeWhoWin()}</h1>
+            `);
+            aPlayer[opponent].choice = '';
+            updatePlayers();
+            setTimeout(function () {
+                $('.result-display').html('');
+                displayChoices();
+            }, 3000);
+        } else {
+            $('.result-display').html(`
+            <h1>Waiting for opponet to chose</h1>
+            `);
+        }
+
+    }
+
+    $(document).on('click', '.choice-btn', function () {
+        aPlayer[player].choice = $(this).text();
+        aPlayer[player].ready = true;
+        updatePlayers();
+        waitingTimer = setInterval(displayResult, waitTime);
+        $('.player' + player + '-display').html('');
+    });
+
+    function displayChoices() {
+        $('.player' + player + '-display').html(`
+            <button type="button" class="choice-btn">Rock</button>
+            <button type="button" class="choice-btn">Paper</button>
+            <button type="button" class="choice-btn">Scissor</button>
+        `);
+    }
+
+    function displayWaiting() {
+        if (aPlayer[opponent].ready === true) {
+            clearInterval(waitingTimer);
+            aPlayer[opponent].ready = false;
+            updatePlayers();
+            $('.info-display').html(`
+         <h1>Pick your choice</h1>
+        `);
+            displayChoices();
+        } else {
+            $('.info-display').html(`
+         <h1>Waiting for player</h1>
+        `);
+        }
+    }
+
+    $(document).on('click', '#nameSubmitBtn', function () {
+        if (aPlayer[0].name === '') {
+            aPlayer[0].name = $('#nameInput').val();
+            aPlayer[0].ready = true;
+            updatePlayers();
+            opponent = 1;
+            player = 0;
+            waitingTimer = setInterval(function () {
+                displayWaiting(0);
+            }, waitTime);
+        } else if (aPlayer[1].name === '') {
+            aPlayer[1].name = $('#nameInput').val();
+            aPlayer[1].ready = true;
+            updatePlayers();
+            opponent = 0;
+            player = 1;
+            waitingTimer = setInterval(function () {
+                displayWaiting(1);
+            }, waitTime);
+        } else {
+            $('.info-display').html(`
+                <h1>There are two players already</h1>
+                `);
+        }
+    });
+
+    $('#disconnect-btn').click(function () {
+        aPlayer[player] = addPlayer('');
+        $('player' + player + '-display').html('');
+        updatePlayers();
+    });
+
     function startGame() {
-        firebaseRef.on('value', function (data) {
+        firebase.database().ref('/Players').on('value', function (data) {
             if (data.exists()) {
                 aPlayer = data.val();
-                console.log(aPlayer);
             } else {
-                let player1 = addPlayer("");
-                let player2 = addPlayer("");
-                let aPlayer = [player1, player2];
-                saveToDatabase();
+                aPlayer = [addPlayer(''), addPlayer('')];
+                updatePlayers();
+            }
+        });
+        firebase.database().ref('/Chat').on('value', function (data) {
+            if (data.exists()) {
+                aChat = data.val();
+            } else {
+                aChat = [];
+                firebase.database().ref('/Chat').set(aChat);
             }
         });
         $('.info-display').html(`
@@ -49,50 +173,5 @@ $(document).ready(function () {
         `);
     }
     startGame();
-
-    function saveToDatabase() {
-        firebaseRef.set(aPlayer);
-    }
-
-    function pickChoices(player) {
-        $(name + '-choices').html('Display choices ');
-        SetTimer(waiting(name), wait);
-    }
-
-    function displayWaiting(index) {
-        console.log(index);
-        if (aPlayer[index].ready === true) {
-            clearInterval(waitTimer);
-        }
-        $('.info-display').html(`
-         <h1>Waiting for player</h1>
-        `);
-    }
-
-    $(document).on('click', '#nameSubmitBtn', function () {
-
-        if (aPlayer[0].name === "") {
-            console.log("not");
-            aPLayer[0].name = $('#nameInput').val();
-            aPlayer[0].ready = true;
-            saveToDatabase();
-            waitTimer = setInterval(function () {
-                displayWaiting('1');
-            }, 1000);
-        } else if (aPlayer[1].name === "") {
-            console.log('1');
-            aPlayer[1].name = $('#nameInput').val();
-            aPlayer[1].ready = true;
-            saveToDatabase();
-            waitTimer = setInterval(function () {
-                displayWaiting('0');
-            }, 1000);
-        } else {
-            console.log('else');
-            $('.info-display').html(`
-                <h1>There are two players already</h1>
-                `);
-        }
-    });
 
 });
