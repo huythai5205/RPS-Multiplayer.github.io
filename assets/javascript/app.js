@@ -34,10 +34,14 @@ $(document).ready(function () {
     }
 
     function displayChat() {
-        $('.chat-box').empty();
-        aChat.forEach(function (value) {
-            $('.chat-box').append(`<p>${value}</p>`);
-        });
+
+        // firebase.database().ref('/Chat').on('child_added', (snap) => {
+        //     $('.chat-box').empty();
+        //     console.log(snap);
+        // });
+        // aChat.forEach(function (value) {
+        //     $('.chat-box').append(`<p>${value}</p>`);
+        // });
         $('.chat-box').scrollTop($('.chat-box')[0].scrollHeight);
     }
 
@@ -49,18 +53,21 @@ $(document).ready(function () {
     });
 
     function seeWhoWin() {
+        console.log(aPlayer[player].choice);
+        console.log(aPlayer[opponent].choice);
         if (aPlayer[player].choice === aPlayer[opponent].choice) {
             return 'Tie';
+        } else if ((aPlayer[player].choice === 'Rock' && aPlayer[opponent].choice === 'Paper') ||
+            (aPlayer[player].choice === 'Paper' && aPlayer[opponent].choice === 'Scissor') ||
+            (aPlayer[player].choice === 'Scissor' && aPlayer[opponent].choice === 'Rock')) {
+            aPlayer[player].losses++;
+            return 'you lose';
         } else {
-            if ((aPlayer[player].choice === 'Rock' && aPlayer[opponent].choice === 'Paper') || (aPlayer[player].choice === 'Paper' && aPlayer[opponent].choice === 'Scissor') || (aPlayer[player].choice === 'Scissor' && aPlayer[opponent].choice === 'Rock')) {
-                aPlayer[player].losses++;
-                return 'you lose';
-            } else {
-                aPlayer[player].wins++;
-                return 'you win';
-            }
+            aPlayer[player].wins++;
+            return 'you win';
         }
     }
+
     function displayResult() {
         if (aPlayer[opponent].ready === true) {
             clearInterval(waitingTimer);
@@ -68,7 +75,7 @@ $(document).ready(function () {
             $('.result-display').html(`
                 <h1>${seeWhoWin()}</h1>
             `);
-            aPlayer[opponent].choice = '';
+            // aPlayer[opponent].choice = '';
             updatePlayers();
             setTimeout(function () {
                 $('.result-display').html('');
@@ -173,5 +180,8 @@ $(document).ready(function () {
         `);
     }
     startGame();
-
+    firebase.database().ref('/Chat').on('child_added', (snap) => {
+        $('.chat-box').empty();
+        console.log(snap);
+    });
 });
