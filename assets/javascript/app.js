@@ -33,14 +33,20 @@ $(document).ready(function () {
         firebase.database().ref('/Players').set(aPlayer);
     }
 
+    firebase.database().ref('/Chat').on('child_added', (snap) => {
+        $('.chat-box').empty();
+        // snap._e.T.forEach(function (value) {
+        //     $('.chat-box').append(`<p>${value}</p>`);
+        // });
+        $('.chat-box').html(snap._e.T);
+        console.log(typeof snap._e.T);
+    });
+
     function displayChat() {
 
         // firebase.database().ref('/Chat').on('child_added', (snap) => {
         //     $('.chat-box').empty();
         //     console.log(snap);
-        // });
-        // aChat.forEach(function (value) {
-        //     $('.chat-box').append(`<p>${value}</p>`);
         // });
         $('.chat-box').scrollTop($('.chat-box')[0].scrollHeight);
     }
@@ -75,7 +81,6 @@ $(document).ready(function () {
             $('.result-display').html(`
                 <h1>${seeWhoWin()}</h1>
             `);
-            // aPlayer[opponent].choice = '';
             updatePlayers();
             setTimeout(function () {
                 $('.result-display').html('');
@@ -180,8 +185,5 @@ $(document).ready(function () {
         `);
     }
     startGame();
-    firebase.database().ref('/Chat').on('child_added', (snap) => {
-        $('.chat-box').empty();
-        console.log(snap);
-    });
+
 });
