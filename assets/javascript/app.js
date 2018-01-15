@@ -158,6 +158,10 @@ $(document).ready(function () {
         updatePlayers();
     });
 
+    $('#reset-game-btn').click(function () {
+        firebase.database().ref().remove();
+    });
+
     function startGame() {
         firebase.database().ref('/Players').on('value', function (data) {
             if (data.exists()) {

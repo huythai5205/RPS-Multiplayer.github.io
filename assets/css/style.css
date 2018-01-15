@@ -1,42 +1,24 @@
-header{
+header {
     text-align: center;
     padding-top: 30px;
 }
 
-.info-display{
+.info-display {
     height: 200px;
 }
 
-.col-4{
+.col-4 {
     height: 200px;
     border-style: solid;
     border-width: 2px;
 }
 
-/* .player0-display{
-    height: 100px;
+.chat-display {
     border-style: solid;
     border-width: 2px;
 }
 
-.result-display{
-    height: 100px;
-    border-style: solid;
-    border-width: 2px;
-}
-
-.player1-display{
-    height:100px;
-    border-style: solid;
-    border-width: 2px;
-} */
-
-.chat-display{
-    border-style: solid;
-    border-width: 2px;
-}
-
-.chat-box{
+.chat-box {
     height: 200px;
     overflow: scroll;
 }
