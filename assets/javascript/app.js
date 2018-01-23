@@ -42,6 +42,15 @@ $(document).ready(function () {
         console.log(typeof snap._e.T);
     });
 
+    firebase.database().ref('/Players').on('value', function (data) {
+        if (data.exists()) {
+            aPlayer = data.val();
+        } else {
+            aPlayer = [addPlayer(''), addPlayer('')];
+            updatePlayers();
+        }
+    });
+
     function displayChat() {
 
         // firebase.database().ref('/Chat').on('child_added', (snap) => {
@@ -57,6 +66,7 @@ $(document).ready(function () {
         $('#chat-input').empty();
         displayChat();
     });
+
 
     function seeWhoWin() {
         console.log(aPlayer[player].choice);
@@ -117,11 +127,17 @@ $(document).ready(function () {
             updatePlayers();
             $('.info-display').html(`
          <h1>Pick your choice</h1>
+         <h2>${aPlayer[player].name}</h2>
+         <h3>Wins: ${aPlayer[player].wins}</h3>
+         <h3>Losses: ${aPlayer[player].losses}</h3>
         `);
             displayChoices();
         } else {
             $('.info-display').html(`
          <h1>Waiting for player</h1>
+         <h2>${aPlayer[player].name}</h2>
+         <h3>Wins: ${aPlayer[player].wins}</h3>
+         <h3>Losses: ${aPlayer[player].losses}</h3>
         `);
         }
     }
@@ -181,7 +197,7 @@ $(document).ready(function () {
         });
         $('.info-display').html(`
          <div class="input-group">
-                    <input type="text" class="form-control" id="nameInput">
+                    <input type="text" class="form-control" id="nameInput" placeholder="Enter your name to start">
                     <span class="input-group-btn">
                         <button class="btn btn-secondary" id="nameSubmitBtn" type="button">Enter</button>
                     </span>
