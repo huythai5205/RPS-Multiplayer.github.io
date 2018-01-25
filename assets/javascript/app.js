@@ -35,28 +35,11 @@ $(document).ready(function () {
 
     firebase.database().ref('/Chat').on('child_added', (snap) => {
         $('.chat-box').empty();
-        // snap._e.T.forEach(function (value) {
-        //     $('.chat-box').append(`<p>${value}</p>`);
-        // });
         $('.chat-box').html(snap._e.T);
-        console.log(typeof snap._e.T);
     });
 
-    firebase.database().ref('/Players').on('value', function (data) {
-        if (data.exists()) {
-            aPlayer = data.val();
-        } else {
-            aPlayer = [addPlayer(''), addPlayer('')];
-            updatePlayers();
-        }
-    });
 
     function displayChat() {
-
-        // firebase.database().ref('/Chat').on('child_added', (snap) => {
-        //     $('.chat-box').empty();
-        //     console.log(snap);
-        // });
         $('.chat-box').scrollTop($('.chat-box')[0].scrollHeight);
     }
 
@@ -69,8 +52,6 @@ $(document).ready(function () {
 
 
     function seeWhoWin() {
-        console.log(aPlayer[player].choice);
-        console.log(aPlayer[opponent].choice);
         if (aPlayer[player].choice === aPlayer[opponent].choice) {
             return 'Tie';
         } else if ((aPlayer[player].choice === 'Rock' && aPlayer[opponent].choice === 'Paper') ||
@@ -96,6 +77,7 @@ $(document).ready(function () {
                 $('.result-display').html('');
                 displayChoices();
             }, 3000);
+            displayWaiting();
         } else {
             $('.result-display').html(`
             <h1>Waiting for opponet to chose</h1>
